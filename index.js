@@ -20,6 +20,7 @@ const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
 // Deploy to a service that uses the 'ECS' deployment controller
 async function updateEcsService(ecs, clusterName, service, taskDefArn, waitForService, waitForMinutes, forceNewDeployment) {
   core.debug('Updating the service');
+  core.debug('test1 ' + forceNewDeployment);
   await ecs.updateService({
     cluster: clusterName,
     service: service,
