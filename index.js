@@ -224,7 +224,7 @@ async function run() {
       waitForMinutes = MAX_WAIT_MINUTES;
     }
     const forceNewDeployment = core.getInput('force-new-deployment', { required: false }) || false;
-    core.debug('test2 ' + typeof forceNewDeployment);
+    core.debug('test2 ' + typeof forceNewDeployment + " " + forceNewDeployment);
     // Register the task definition
     core.debug('Registering the task definition');
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
