@@ -20,7 +20,6 @@ const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
 // Deploy to a service that uses the 'ECS' deployment controller
 async function updateEcsService(ecs, clusterName, service, taskDefArn, waitForService, waitForMinutes, forceNewDeployment) {
   core.debug('Updating the service');
-  core.debug('test1 ' + typeof forceNewDeployment);
   await ecs.updateService({
     cluster: clusterName,
     service: service,
@@ -223,9 +222,8 @@ async function run() {
     if (waitForMinutes > MAX_WAIT_MINUTES) {
       waitForMinutes = MAX_WAIT_MINUTES;
     }
-    core.debug('test33 ' +typeof core.getInput('force-new-deployment', { required: false }) + "  " + core.getInput('force-new-deployment', { required: false }));
-    const forceNewDeployment = (core.getInput('force-new-deployment', { required: false })).includes("true") || (core.getInput('force-new-deployment', { required: false })).includes("false") ? Boolean(core.getInput('force-new-deployment', { required: false })) : core.getInput('force-new-deployment', { required: false })  || false;
-    core.debug('test2 ' + typeof forceNewDeployment + " " + forceNewDeployment);
+    const forceNewDeployment = core.getInput('force-new-deployment', { required: false }) != undefined ? (core.getInput('force-new-deployment', { required: false })).includes("true") || (core.getInput('force-new-deployment', { required: false })).includes("false") ? Boolean(core.getInput('force-new-deployment', { required: false })) : core.getInput('force-new-deployment', { required: false }) : core.getInput('force-new-deployment', { required: false }) || false;
+
     // Register the task definition
     core.debug('Registering the task definition');
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
