@@ -223,7 +223,7 @@ async function run() {
     if (waitForMinutes > MAX_WAIT_MINUTES) {
       waitForMinutes = MAX_WAIT_MINUTES;
     }
-    core.debug('test33 ' +typeof forceNewDeployment + "  " + core.getInput('force-new-deployment', { required: false }));
+    core.debug('test33 ' +typeof core.getInput('force-new-deployment', { required: false }) + "  " + core.getInput('force-new-deployment', { required: false }));
     const forceNewDeployment = (core.getInput('force-new-deployment', { required: false })).includes("true") || (core.getInput('force-new-deployment', { required: false })).includes("false") ? Boolean(core.getInput('force-new-deployment', { required: false })) : core.getInput('force-new-deployment', { required: false })  || false;
     core.debug('test2 ' + typeof forceNewDeployment + " " + forceNewDeployment);
     // Register the task definition
