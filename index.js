@@ -116,9 +116,9 @@ function removeIgnoredAttributes(taskDef) {
   for (var attribute of IGNORED_TASK_DEFINITION_ATTRIBUTES) {
     if (taskDef[attribute]) {
       core.warning(`Ignoring property '${attribute}' in the task definition file. ` +
-        'This property is returned by the Amazon ECS DescribeTaskDefinition API and may be shown in the ECS console, ' +
-        'but it is not a valid field when registering a new task definition. ' +
-        'This field can be safely removed from your task definition file.');
+          'This property is returned by the Amazon ECS DescribeTaskDefinition API and may be shown in the ECS console, ' +
+          'but it is not a valid field when registering a new task definition. ' +
+          'This field can be safely removed from your task definition file.');
       delete taskDef[attribute];
     }
   }
@@ -128,15 +128,18 @@ function removeIgnoredAttributes(taskDef) {
 
 function maintainAppMeshConfiguration(taskDef) {
   if ('proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties.length > 0) {
-    taskDef.proxyConfiguration.properties.forEach((value, index, arr) => {
-      core.debug('value in side proxyconfig --- ' + value.name + ' ' + value.value )
-      if (!('value' in value)) {
-        core.debug('value in side proxyconfig value --- ' + value.value + ' ' + value.name)
+    taskDef.proxyConfiguration.properties.forEach((property, index, arr) => {
+      //core.debug('value in side proxyconfig --- ' + property.name + ' ' + property.value );
+      if (!('value' in property)) {
+        //core.debug('value in side proxyconfig value --- ' + property.name + ' ' + property.value);
         arr[index].value = '';
+      }
+      if (!('name' in property)) {
+        arr[index].name = '';
       }
     });
   }
-  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.proxyConfiguration))
+  //core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.proxyConfiguration));
   return taskDef;
 }
 
@@ -161,8 +164,8 @@ async function createCodeDeployDeployment(codedeploy, clusterName, service, task
 
   // Insert the task def ARN into the appspec file
   const appSpecPath = path.isAbsolute(codeDeployAppSpecFile) ?
-    codeDeployAppSpecFile :
-    path.join(process.env.GITHUB_WORKSPACE, codeDeployAppSpecFile);
+      codeDeployAppSpecFile :
+      path.join(process.env.GITHUB_WORKSPACE, codeDeployAppSpecFile);
   const fileContents = fs.readFileSync(appSpecPath, 'utf8');
   const appSpecContents = yaml.parse(fileContents);
 
@@ -244,8 +247,8 @@ async function run() {
     const forceNewDeployment = forceNewDeployInput.toLowerCase() === 'true'; // Register the task definition
     core.debug('Registering the task definition');
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
-      taskDefinitionFile :
-      path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
+        taskDefinitionFile :
+        path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
     const fileContents = fs.readFileSync(taskDefPath, 'utf8');
     const taskDefContents = maintainAppMeshConfiguration(removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents))));
 
@@ -304,5 +307,5 @@ module.exports = run;
 
 /* istanbul ignore next */
 if (require.main === module) {
-    run();
+  run();
 }
