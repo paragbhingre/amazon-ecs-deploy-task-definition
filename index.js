@@ -136,6 +136,7 @@ function maintainAppMeshConfiguration(taskDef) {
       }
     });
   }
+  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef))
   return taskDef;
 }
 
