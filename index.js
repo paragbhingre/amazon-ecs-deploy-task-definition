@@ -131,7 +131,7 @@ function maintainAppMeshConfiguration(taskDef) {
     taskDef.proxyConfiguration.properties.forEach((value, index, arr) => {
       core.debug('value in side proxyconfig --- ' + value.name + ' ' + value.value )
       if (!('value' in value)) {
-        core.debug('value in side proxyconfig value --- ' + value)
+        core.debug('value in side proxyconfig value --- ' + value.value + ' ' + value.name)
         arr[index].value = '';
       }
     });
