@@ -130,7 +130,9 @@ function removeIgnoredAttributes(taskDef) {
 }
 
 function maintainAppMeshConfiguration(taskDef) {
+  core.debug('value out side proxyconfig --- ');
   if ('proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties.length > 0) {
+    core.debug('value in side proxyconfig --- ');
     taskDef.proxyConfiguration.properties.forEach((property, index, arr) => {
       //core.debug('value in side proxyconfig --- ' + property.name + ' ' + property.value );
       if (!('value' in property)) {
