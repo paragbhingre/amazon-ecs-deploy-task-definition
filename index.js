@@ -14,7 +14,10 @@ const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
   'taskDefinitionArn',
   'requiresAttributes',
   'revision',
-  'status'
+  'status',
+  'registeredAt',
+  'deregisteredAt',
+  'registeredBy'
 ];
 
 // Deploy to a service that uses the 'ECS' deployment controller
@@ -239,12 +242,11 @@ async function run() {
     if (waitForMinutes > MAX_WAIT_MINUTES) {
       waitForMinutes = MAX_WAIT_MINUTES;
     }
-    const forceNewDeployInput = core.getInput('force-new-deployment', { required: false }) || 'false';
 
-    //const forceNewDeployInput = core.getInput('force-new-deployment', { required: false });
-    core.debug("forceNewDeployInput --- " + typeof forceNewDeployInput);
-    core.debug("forceNewDeployInput --- " + forceNewDeployInput);
-    const forceNewDeployment = forceNewDeployInput.toLowerCase() === 'true'; // Register the task definition
+    const forceNewDeployInput = core.getInput('force-new-deployment', { required: false }) || 'false';
+    const forceNewDeployment = forceNewDeployInput.toLowerCase() === 'true';
+    
+    // Register the task definition
     core.debug('Registering the task definition');
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
         taskDefinitionFile :
