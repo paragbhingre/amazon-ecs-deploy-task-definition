@@ -126,6 +126,19 @@ function removeIgnoredAttributes(taskDef) {
   return taskDef;
 }
 
+function maintainAppMeshConfiguration(taskDef) {
+  if ('proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties.length > 0) {
+    taskDef.proxyConfiguration.properties.forEach((value, index, arr) => {
+      core.debug('value in side proxyconfig --- ' + value + ' ' + index )
+      if (!('value' in value)) {
+        core.debug('value in side proxyconfig value --- ' + value)
+        arr[index].value = '';
+      }
+    });
+  }
+  return taskDef;
+}
+
 // Deploy to a service that uses the 'CODE_DEPLOY' deployment controller
 async function createCodeDeployDeployment(codedeploy, clusterName, service, taskDefArn, waitForService, waitForMinutes) {
   core.debug('Updating AppSpec file with new task definition ARN');
@@ -233,7 +246,8 @@ async function run() {
       taskDefinitionFile :
       path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
     const fileContents = fs.readFileSync(taskDefPath, 'utf8');
-    const taskDefContents = removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents)));
+    const taskDefContents = maintainAppMeshConfiguration(removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents))));
+
     let registerResponse;
     try {
       registerResponse = await ecs.registerTaskDefinition(taskDefContents).promise();
