@@ -131,7 +131,7 @@ function removeIgnoredAttributes(taskDef) {
 
 function maintainAppMeshConfiguration(taskDef) {
   core.debug('value out side proxyconfig --- ');
-  if ('proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties && taskDef.proxyConfiguration.properties.length > 0) {
+  if (validateProxyConfigurations(taskDef)) {
     core.debug('value in side proxyconfig --- ');
     taskDef.proxyConfiguration.properties.forEach((property, index, arr) => {
       //core.debug('value in side proxyconfig --- ' + property.name + ' ' + property.value );
@@ -148,6 +148,11 @@ function maintainAppMeshConfiguration(taskDef) {
   core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.proxyConfiguration));
   return taskDef;
 }
+
+function validateProxyConfigurations(taskDef){
+  return 'proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties && taskDef.proxyConfiguration.properties.length > 0;
+}
+
 
 // Deploy to a service that uses the 'CODE_DEPLOY' deployment controller
 async function createCodeDeployDeployment(codedeploy, clusterName, service, taskDefArn, waitForService, waitForMinutes) {
