@@ -113,7 +113,7 @@ function emptyValueReplacer(_, value) {
 
 function cleanNullKeys(obj) {
   core.debug("printing json before cleaning " + JSON.stringify(obj));
-  core.debug("printing json after cleaning " + JSON.parse(JSON.stringify(obj, emptyValueReplacer)));
+  core.debug("printing json after cleaning " + JSON.stringify(obj, emptyValueReplacer));
   return JSON.parse(JSON.stringify(obj, emptyValueReplacer));
 }
 
