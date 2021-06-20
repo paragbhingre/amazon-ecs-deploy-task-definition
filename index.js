@@ -70,12 +70,14 @@ function findAppSpecKey(obj, keyName) {
 }
 
 function isEmptyValue(value) {
+  core.debug("printing json in isEmptyValue " + JSON.stringify(value));
   if (value === null || value === undefined || value === '') {
     return true;
   }
 
   if (Array.isArray(value)) {
     for (var element of value) {
+      core.debug("printing inside for loop " + element);
       if (!isEmptyValue(element)) {
         // the array has at least one non-empty element
         return false;
@@ -100,6 +102,7 @@ function isEmptyValue(value) {
 }
 
 function emptyValueReplacer(_, value) {
+  core.debug("printing json in emptyValueReplacer " + JSON.stringify(value));
   if (isEmptyValue(value)) {
     return undefined;
   }
@@ -113,7 +116,6 @@ function emptyValueReplacer(_, value) {
 
 function cleanNullKeys(obj) {
   core.debug("printing json before cleaning " + JSON.stringify(obj));
-  core.debug("printing json after cleaning " + JSON.stringify(obj, emptyValueReplacer));
   return JSON.parse(JSON.stringify(obj, emptyValueReplacer));
 }
 
