@@ -80,9 +80,11 @@ function isEmptyValue(value) {
       core.debug("printing inside for loop " + JSON.stringify(element));
       if (!isEmptyValue(element)) {
         // the array has at least one non-empty element
+        core.debug("printing inside false " + JSON.stringify(element));
         return false;
       }
     }
+    core.debug("printing inside true " + JSON.stringify(value));
     // the array has no non-empty elements
     return true;
   }
