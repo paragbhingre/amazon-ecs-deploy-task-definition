@@ -77,7 +77,7 @@ function isEmptyValue(value) {
 
   if (Array.isArray(value)) {
     for (var element of value) {
-      core.debug("printing inside for loop " + element);
+      core.debug("printing inside for loop " + JSON.stringify(element));
       if (!isEmptyValue(element)) {
         // the array has at least one non-empty element
         return false;
