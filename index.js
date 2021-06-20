@@ -262,6 +262,7 @@ async function run() {
         taskDefinitionFile :
         path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
     const fileContents = fs.readFileSync(taskDefPath, 'utf8');
+    core.debug("printing before sending  " + JSON.stringify(yaml.parse(fileContents)));
     const taskDefContents = maintainAppMeshConfiguration(removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents))));
 
     let registerResponse;
