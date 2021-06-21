@@ -69,24 +69,30 @@ function findAppSpecKey(obj, keyName) {
   throw new Error(`AppSpec file must include property '${keyName}'`);
 }
 
-function isEmptyValue(value) {
+function  isEmptyValue(value) {
+  core.debug("printing json in isEmptyValue " + JSON.stringify(value));
   if (value === null || value === undefined || value === '') {
     return true;
   }
 
   if (Array.isArray(value)) {
     for (var element of value) {
+      core.debug("printing inside for loop " + JSON.stringify(element));
       if (!isEmptyValue(element)) {
         // the array has at least one non-empty element
+        core.debug("printing inside false " + JSON.stringify(element));
         return false;
       }
     }
+    core.debug("printing inside true " + JSON.stringify(value));
     // the array has no non-empty elements
     return true;
   }
 
   if (typeof value === 'object') {
+    core.debug("printing inside object " + JSON.stringify(value));
     for (var childValue of Object.values(value)) {
+      core.debug("printing inside object loop " + JSON.stringify(childValue));
       if (!isEmptyValue(childValue)) {
         // the object has at least one non-empty property
         return false;
@@ -100,6 +106,7 @@ function isEmptyValue(value) {
 }
 
 function emptyValueReplacer(_, value) {
+  core.debug("printing json in emptyValueReplacer " + JSON.stringify(value));
   if (isEmptyValue(value)) {
     return undefined;
   }
@@ -112,6 +119,7 @@ function emptyValueReplacer(_, value) {
 }
 
 function cleanNullKeys(obj) {
+  core.debug("printing json before cleaning " + JSON.stringify(obj));
   return JSON.parse(JSON.stringify(obj, emptyValueReplacer));
 }
 
@@ -119,15 +127,40 @@ function removeIgnoredAttributes(taskDef) {
   for (var attribute of IGNORED_TASK_DEFINITION_ATTRIBUTES) {
     if (taskDef[attribute]) {
       core.warning(`Ignoring property '${attribute}' in the task definition file. ` +
-        'This property is returned by the Amazon ECS DescribeTaskDefinition API and may be shown in the ECS console, ' +
-        'but it is not a valid field when registering a new task definition. ' +
-        'This field can be safely removed from your task definition file.');
+          'This property is returned by the Amazon ECS DescribeTaskDefinition API and may be shown in the ECS console, ' +
+          'but it is not a valid field when registering a new task definition. ' +
+          'This field can be safely removed from your task definition file.');
       delete taskDef[attribute];
     }
   }
 
   return taskDef;
 }
+
+function maintainAppMeshConfiguration(taskDef) {
+  core.debug('value out side proxyconfig --- ');
+  if (validateProxyConfigurations(taskDef)) {
+    core.debug('value in side proxyconfig --- ');
+    taskDef.proxyConfiguration.properties.forEach((property, index, arr) => {
+      //core.debug('value in side proxyconfig --- ' + property.name + ' ' + property.value );
+      if (!('value' in property)) {
+        //core.debug('value in side proxyconfig value --- ' + property.name + ' ' + property.value);
+        arr[index].value = '';
+      }
+      if (!('name' in property)) {
+        arr[index].name = '';
+      }
+    });
+  }
+  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef));
+  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.proxyConfiguration));
+  return taskDef;
+}
+
+function validateProxyConfigurations(taskDef){
+  return 'proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties && taskDef.proxyConfiguration.properties.length > 0;
+}
+
 
 // Deploy to a service that uses the 'CODE_DEPLOY' deployment controller
 async function createCodeDeployDeployment(codedeploy, clusterName, service, taskDefArn, waitForService, waitForMinutes) {
@@ -150,8 +183,8 @@ async function createCodeDeployDeployment(codedeploy, clusterName, service, task
 
   // Insert the task def ARN into the appspec file
   const appSpecPath = path.isAbsolute(codeDeployAppSpecFile) ?
-    codeDeployAppSpecFile :
-    path.join(process.env.GITHUB_WORKSPACE, codeDeployAppSpecFile);
+      codeDeployAppSpecFile :
+      path.join(process.env.GITHUB_WORKSPACE, codeDeployAppSpecFile);
   const fileContents = fs.readFileSync(appSpecPath, 'utf8');
   const appSpecContents = yaml.parse(fileContents);
 
@@ -232,10 +265,12 @@ async function run() {
     // Register the task definition
     core.debug('Registering the task definition');
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
-      taskDefinitionFile :
-      path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
+        taskDefinitionFile :
+        path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
     const fileContents = fs.readFileSync(taskDefPath, 'utf8');
-    const taskDefContents = removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents)));
+    core.debug("printing before sending  " + JSON.stringify(yaml.parse(fileContents)));
+    const taskDefContents = maintainAppMeshConfiguration(removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents))));
+
     let registerResponse;
     try {
       registerResponse = await ecs.registerTaskDefinition(taskDefContents).promise();
@@ -291,5 +326,5 @@ module.exports = run;
 
 /* istanbul ignore next */
 if (require.main === module) {
-    run();
+  run();
 }
