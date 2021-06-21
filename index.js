@@ -92,7 +92,7 @@ function  isEmptyValue(value) {
   if (typeof value === 'object') {
     core.debug("printing inside object " + JSON.stringify(value));
     for (var childValue of Object.values(value)) {
-      core.debug("printing inside object loop " + JSON.stringify(value));
+      core.debug("printing inside object loop " + JSON.stringify(childValue));
       if (!isEmptyValue(childValue)) {
         // the object has at least one non-empty property
         return false;
