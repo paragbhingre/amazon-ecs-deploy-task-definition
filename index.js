@@ -69,7 +69,7 @@ function findAppSpecKey(obj, keyName) {
   throw new Error(`AppSpec file must include property '${keyName}'`);
 }
 
-function isEmptyValue(value) {
+function  isEmptyValue(value) {
   core.debug("printing json in isEmptyValue " + JSON.stringify(value));
   if (value === null || value === undefined || value === '') {
     return true;
@@ -90,7 +90,9 @@ function isEmptyValue(value) {
   }
 
   if (typeof value === 'object') {
+    core.debug("printing inside object " + JSON.stringify(value));
     for (var childValue of Object.values(value)) {
+      core.debug("printing inside object loop " + JSON.stringify(value));
       if (!isEmptyValue(childValue)) {
         // the object has at least one non-empty property
         return false;
