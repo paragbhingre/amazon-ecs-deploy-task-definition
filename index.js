@@ -273,6 +273,7 @@ async function run() {
 
     let registerResponse;
     try {
+      core.debug("printing taskDefContents  " + taskDefContents);
       registerResponse = await ecs.registerTaskDefinition(taskDefContents).promise();
     } catch (error) {
       core.setFailed("Failed to register task definition in ECS: " + error.message);
