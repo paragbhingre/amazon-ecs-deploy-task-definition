@@ -71,7 +71,7 @@ function findAppSpecKey(obj, keyName) {
 
 function  isEmptyValue(value) {
   core.debug("printing json in isEmptyValue " + JSON.stringify(value));
-  if (value === null || value === undefined || value === '') {
+  if (value === null || value === undefined) {
     return true;
   }
 
