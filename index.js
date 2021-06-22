@@ -76,6 +76,7 @@ function  isEmptyValue(value) {
   }
 
   if (Array.isArray(value)) {
+    core.debug("printing inside isArray isEmptyValue " + JSON.stringify(value));
     for (var element of value) {
       core.debug("printing inside for loop " + JSON.stringify(element));
       if (!isEmptyValue(element)) {
@@ -99,6 +100,7 @@ function  isEmptyValue(value) {
       }
     }
     // the object has no non-empty property
+    core.debug("printing outside all loops " + JSON.stringify(value));
     return true;
   }
 
@@ -106,13 +108,14 @@ function  isEmptyValue(value) {
 }
 
 function emptyValueReplacer(_, value) {
-  core.debug("printing json in emptyValueReplacer " + JSON.stringify(value));
+  core.debug("printing json in emptyValueReplacer 1" + JSON.stringify(value));
   if (isEmptyValue(value)) {
+    core.debug("printing json in emptyValueReplacer 2" + JSON.stringify(value));
     return undefined;
   }
-
+  core.debug("printing json in emptyValueReplacer 3" + JSON.stringify(value));
   if (Array.isArray(value)) {
-    core.debug("printing json inside emptyValueReplacer Array " + JSON.stringify(value));
+    core.debug("printing json inside emptyValueReplacer Array 4" + JSON.stringify(value));
     return value.filter(e => !isEmptyValue(e));
   }
 
