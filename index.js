@@ -112,6 +112,7 @@ function emptyValueReplacer(_, value) {
   }
 
   if (Array.isArray(value)) {
+    core.debug("printing json inside emptyValueReplacer Array " + JSON.stringify(value));
     return value.filter(e => !isEmptyValue(e));
   }
 
