@@ -164,9 +164,9 @@ function maintainAppMeshConfiguration(taskDef) {
 function maintainEnvVariables(taskDef) {
   core.debug('value out side env config --- ');
   if (validateProxyConfigurations(taskDef)) {
-    core.debug('value in side env config --- ');
+    core.debug('value in side env config --- ' + taskDef.environment);
     taskDef.environment.forEach((property, index, arr) => {
-      core.debug('value in side env config --- ' + property.name + ' ' + property.value );
+      core.debug('value in side env config 1 --- ' + property.name + ' ' + property.value );
       if (!('value' in property)) {
         core.debug('value in side env config --- ' + property.name + ' ' + property.value);
         arr[index].value = '';
