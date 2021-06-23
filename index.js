@@ -161,6 +161,26 @@ function maintainAppMeshConfiguration(taskDef) {
   return taskDef;
 }
 
+function maintainEnvVariables(taskDef) {
+  core.debug('value out side proxyconfig --- ');
+  if (validateProxyConfigurations(taskDef)) {
+    core.debug('value in side proxyconfig --- ');
+    taskDef.environment.forEach((property, index, arr) => {
+      //core.debug('value in side proxyconfig --- ' + property.name + ' ' + property.value );
+      if (!('value' in property)) {
+        //core.debug('value in side proxyconfig value --- ' + property.name + ' ' + property.value);
+        arr[index].value = '';
+      }
+      if (!('name' in property)) {
+        arr[index].name = '';
+      }
+    });
+  }
+  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef));
+  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.proxyConfiguration));
+  return taskDef;
+}
+
 function validateProxyConfigurations(taskDef){
   return 'proxyConfiguration' in taskDef && taskDef.proxyConfiguration.type && taskDef.proxyConfiguration.type == 'APPMESH' && taskDef.proxyConfiguration.properties && taskDef.proxyConfiguration.properties.length > 0;
 }
@@ -273,7 +293,7 @@ async function run() {
         path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
     const fileContents = fs.readFileSync(taskDefPath, 'utf8');
     core.debug("printing before sending  " + JSON.stringify(yaml.parse(fileContents)));
-    const taskDefContents = maintainAppMeshConfiguration(removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents))));
+    const taskDefContents = maintainAppMeshConfiguration(removeIgnoredAttributes(maintainEnvVariables(cleanNullKeys(yaml.parse(fileContents)))));
 
     let registerResponse;
     try {
