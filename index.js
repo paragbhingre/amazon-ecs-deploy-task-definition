@@ -165,7 +165,7 @@ function maintainEnvVariables(taskDef) {
   core.debug('value out side env config --- ');
     core.debug('value in side env config --- ' + JSON.stringify(taskDef.containerDefinitions));
     taskDef.containerDefinitions.forEach((container) => {
-      container.environment.foreEach((property, index, arr) => {
+      container.environment.forEach((property, index, arr) => {
         if (!('value' in property)) {
           core.debug('value in side env config --- ' + property.name + ' ' + property.value);
           arr[index].value = '';
