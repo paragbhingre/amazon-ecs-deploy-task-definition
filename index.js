@@ -162,13 +162,13 @@ function maintainAppMeshConfiguration(taskDef) {
 }
 
 function maintainEnvVariables(taskDef) {
-  core.debug('value out side proxyconfig --- ');
+  core.debug('value out side env config --- ');
   if (validateProxyConfigurations(taskDef)) {
-    core.debug('value in side proxyconfig --- ');
+    core.debug('value in side env config --- ');
     taskDef.environment.forEach((property, index, arr) => {
-      //core.debug('value in side proxyconfig --- ' + property.name + ' ' + property.value );
+      core.debug('value in side env config --- ' + property.name + ' ' + property.value );
       if (!('value' in property)) {
-        //core.debug('value in side proxyconfig value --- ' + property.name + ' ' + property.value);
+        core.debug('value in side env config --- ' + property.name + ' ' + property.value);
         arr[index].value = '';
       }
       if (!('name' in property)) {
@@ -176,8 +176,8 @@ function maintainEnvVariables(taskDef) {
       }
     });
   }
-  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef));
-  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.proxyConfiguration));
+  core.debug('teaskDef Response env config -- ' + JSON.stringify(taskDef));
+  core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.environment));
   return taskDef;
 }
 
