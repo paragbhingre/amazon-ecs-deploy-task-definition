@@ -71,7 +71,7 @@ function findAppSpecKey(obj, keyName) {
 
 function  isEmptyValue(value) {
   core.debug("printing json in isEmptyValue " + JSON.stringify(value));
-  if (value === null || value === undefined) {
+  if (value === null || value === undefined || value == '') {
     return true;
   }
 
@@ -107,7 +107,7 @@ function  isEmptyValue(value) {
   return false;
 }
 
-function emptyValueReplacer(_, value) {
+function emptyValueReplacer(value) {
   core.debug("printing json in emptyValueReplacer 1" + JSON.stringify(value));
   if (isEmptyValue(value)) {
     core.debug("printing json in emptyValueReplacer 2" + JSON.stringify(value));
@@ -124,7 +124,8 @@ function emptyValueReplacer(_, value) {
 
 function cleanNullKeys(obj) {
   core.debug("printing json before cleaning " + JSON.stringify(obj));
-  return JSON.parse(JSON.stringify(obj, emptyValueReplacer));
+  obj = emptyValueReplacer(obj);
+  return JSON.parse(JSON.stringify(obj));
 }
 
 function removeIgnoredAttributes(taskDef) {
