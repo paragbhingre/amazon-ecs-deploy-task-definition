@@ -163,7 +163,6 @@ function maintainAppMeshConfiguration(taskDef) {
 
 function maintainEnvVariables(taskDef) {
   core.debug('value out side env config --- ');
-  if (validateProxyConfigurations(taskDef)) {
     core.debug('value in side env config --- ' + taskDef.environment);
     taskDef.environment.forEach((property, index, arr) => {
       core.debug('value in side env config 1 --- ' + property.name + ' ' + property.value );
@@ -175,7 +174,6 @@ function maintainEnvVariables(taskDef) {
         arr[index].name = '';
       }
     });
-  }
   core.debug('teaskDef Response env config -- ' + JSON.stringify(taskDef));
   core.debug('teaskDef Response -- ' + JSON.stringify(taskDef.environment));
   return taskDef;
