@@ -107,7 +107,7 @@ function  isEmptyValue(value) {
   return false;
 }
 
-function emptyValueReplacer(value) {
+function emptyValueReplacer(_, value) {
   core.debug("printing json in emptyValueReplacer 1" + JSON.stringify(value));
   if (isEmptyValue(value)) {
     core.debug("printing json in emptyValueReplacer 2" + JSON.stringify(value));
@@ -124,8 +124,7 @@ function emptyValueReplacer(value) {
 
 function cleanNullKeys(obj) {
   core.debug("printing json before cleaning " + JSON.stringify(obj));
-  obj = emptyValueReplacer(obj);
-  return JSON.parse(JSON.stringify(obj));
+  return JSON.parse(JSON.stringify(obj, emptyValueReplacer));
 }
 
 function removeIgnoredAttributes(taskDef) {
